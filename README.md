@@ -1,4 +1,4 @@
-# Create Custom CA Trust Store Bundle:lock: #
+# Create Custom CA Trust Store Bundle #
 
 Create Custom CA Trust Store Bundle is a simple script that downloads
 Certificate Authority (CA) certificates, intermediate certificates, 
