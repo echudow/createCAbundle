@@ -32,8 +32,8 @@ intermediate_certs = {
 
 all_certs = { **cert_stores, **intermediate_certs }
 cache_dir = "./cache"
-PTCertsPEM = "PTCerts.PEM"
-PTCertsWithIntermediates = "PTCertsWithIntermediates.PEM"
+PTCertsPEM = "PTCerts.pem"
+PTCertsWithIntermediates = "PTCertsWithIntermediates.pem"
 AllCertsPEM = "AllCerts.pem"
 
 def get_certificates(self):
