@@ -18,8 +18,13 @@ cert_stores = {
 }
 
 intermediate_certs = {
-    'Entrust_Intermediate_1' : 'http://aia.entrust.net/l1k-chain256.cer',
-    'DigiCert_Intermediate_1' : 'http://cacerts.digicert.com/DigiCertSHA2SecureServerCA.crt',
+    'Entrust_L1K_Intermediate' : 'http://aia.entrust.net/l1k-chain256.cer',
+    'Entrust_L1M_Intermediate' : 'http://aia.entrust.net/l1m-chain256.cer',
+    'DigiCert_SHA2_EV_Intermediate' : 'http://cacerts.digicert.com/DigiCertSHA2ExtendedValidationServerCA.crt',
+    'DigiCert_SHA2_Secure_Server_Intermediate' : 'http://cacerts.digicert.com/DigiCertSHA2SecureServerCA.crt',
+    'IdenTrust_TrustID_Server_Intermediate' : 'http://validation.identrust.com/certs/trustidcaa52.p7c',
+    'GeoTrust_RSA_Intermediate' : 'http://cacerts.geotrust.com/GeoTrustRSACA2018.crt',
+    'GeoTrust_EV RSA_Intermediate' : 'http://cacerts.geotrust.com/GeoTrustEVRSACA2018.crt',
 }
 
 all_certs = { **cert_stores, **intermediate_certs }
@@ -119,6 +124,10 @@ def download_certificates_and_create_PEM(cert_type, url):
         with open(filename, 'rb') as cert_file:
             if(extension == "p7b"):
                 cert_data = crypto.load_pkcs7_data(crypto.FILETYPE_PEM, cert_file.read())
+                certs = get_certificates(cert_data)
+                print("Found {} certs.".format(len(certs)))
+            elif(extension == "p7c"):
+                cert_data = crypto.load_pkcs7_data(crypto.FILETYPE_ASN1, cert_file.read())
                 certs = get_certificates(cert_data)
                 print("Found {} certs.".format(len(certs)))
             else:
