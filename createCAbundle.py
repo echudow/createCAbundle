@@ -25,6 +25,9 @@ intermediate_certs = {
     'IdenTrust_TrustID_Server_Intermediate' : 'http://validation.identrust.com/certs/trustidcaa52.p7c',
     'GeoTrust_RSA_Intermediate' : 'http://cacerts.geotrust.com/GeoTrustRSACA2018.crt',
     'GeoTrust_EV RSA_Intermediate' : 'http://cacerts.geotrust.com/GeoTrustEVRSACA2018.crt',
+    'DigiCert_Global_CA_G2_Intermediate' : 'http://cacerts.digicert.com/DigiCertGlobalCAG2.crt',
+    'DigiCert_SHA2_High_Assurance_Intermediate' : 'http://cacerts.digicert.com/DigiCertSHA2HighAssuranceServerCA.crt',
+    'GoDaddy_Secure_CA_G2_Intermediate' : 'http://certificates.godaddy.com/repository/gdig2.crt',
 }
 
 all_certs = { **cert_stores, **intermediate_certs }
