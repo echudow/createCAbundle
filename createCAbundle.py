@@ -12,9 +12,9 @@ import certifi
 import argparse
 
 cert_stores = {
-    'DoD_Roots' : 'http://iasecontent.disa.mil/pki-pke/Certificates_PKCS7_v5.5_DoD.zip',
-    'ECA_Roots' : 'http://iasecontent.disa.mil/pki-pke/Certificates_PKCS7_v5.4_ECA.zip',
-    'JITC_Roots' : 'http://iasecontent.disa.mil/pki-pke/Certificates_PKCS7_v5.5_JITC.zip',
+    'DoD_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_v5-6_dod.zip',
+    'ECA_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/Certificates_PKCS7_v5.4_ECA.zip',
+    'JITC_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_v5-6_jitc.zip',
 }
 
 intermediate_certs = {
