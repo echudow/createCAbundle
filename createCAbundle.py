@@ -13,7 +13,7 @@ import argparse
 
 cert_stores = {
     'DoD_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_v5-6_dod.zip',
-    'ECA_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/Certificates_PKCS7_v5.4_ECA.zip',
+    'ECA_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/unclass-Certificates_PKCS7_v5.5_ECA.zip',
     'JITC_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_v5-6_jitc.zip',
 }
 
