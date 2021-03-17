@@ -12,9 +12,9 @@ import certifi
 import argparse
 
 cert_stores = {
-    'DoD_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_v5-6_dod.zip',
-    'ECA_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/unclass-Certificates_PKCS7_v5.5_ECA.zip',
-    'JITC_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_v5-6_jitc.zip',
+    'DoD_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_DoD.zip',
+    'ECA_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_ECA.zip',
+    'JITC_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_JITC.zip',
 }
 
 intermediate_certs = {
@@ -27,6 +27,7 @@ intermediate_certs = {
     'GeoTrust_EV RSA_Intermediate' : 'http://cacerts.geotrust.com/GeoTrustEVRSACA2018.crt',
     'DigiCert_Global_CA_G2_Intermediate' : 'http://cacerts.digicert.com/DigiCertGlobalCAG2.crt',
     'DigiCert_SHA2_High_Assurance_Intermediate' : 'http://cacerts.digicert.com/DigiCertSHA2HighAssuranceServerCA.crt',
+    'DigiCert TLS RSA SHA256 2020 CA1' : 'https://cacerts.digicert.com/DigiCertTLSRSASHA2562020CA1.crt',
     'GoDaddy_Secure_CA_G2_Intermediate' : 'http://certificates.godaddy.com/repository/gdig2.crt',
 }
 
