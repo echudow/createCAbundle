@@ -11,12 +11,14 @@ from OpenSSL import crypto
 import certifi
 import argparse
 
+# Must add _Roots to end
 cert_stores = {
     'DoD_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_DoD.zip',
     'ECA_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_ECA.zip',
     'JITC_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_JITC.zip',
 }
 
+# Must add _Intermediate to end
 intermediate_certs = {
     'Entrust_L1K_Intermediate' : 'http://aia.entrust.net/l1k-chain256.cer',
     'Entrust_L1M_Intermediate' : 'http://aia.entrust.net/l1m-chain256.cer',
@@ -27,7 +29,7 @@ intermediate_certs = {
     'GeoTrust_EV RSA_Intermediate' : 'http://cacerts.geotrust.com/GeoTrustEVRSACA2018.crt',
     'DigiCert_Global_CA_G2_Intermediate' : 'http://cacerts.digicert.com/DigiCertGlobalCAG2.crt',
     'DigiCert_SHA2_High_Assurance_Intermediate' : 'http://cacerts.digicert.com/DigiCertSHA2HighAssuranceServerCA.crt',
-    'DigiCert TLS RSA SHA256 2020 CA1' : 'https://cacerts.digicert.com/DigiCertTLSRSASHA2562020CA1.crt',
+    'DigiCert_TLS_RSA_SHA256_2020_CA1_Intermediate' : 'https://cacerts.digicert.com/DigiCertTLSRSASHA2562020CA1.crt',
     'GoDaddy_Secure_CA_G2_Intermediate' : 'http://certificates.godaddy.com/repository/gdig2.crt',
 }
 
