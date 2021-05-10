@@ -1,4 +1,4 @@
-# This python script will download the publicly trusted Mozilla root CAs and 
+# This python script will download the publicly trusted Mozilla root CAs and
 # the DoD PKI root CAs to create a PEM file CA bundle to be used with PSHTT
 # and SSLyze and other tools.
 
@@ -12,25 +12,26 @@ import certifi
 import argparse
 
 cert_stores = {
-    'DoD_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_v5-6_dod.zip',
-    'ECA_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/unclass-Certificates_PKCS7_v5.5_ECA.zip',
-    'JITC_Roots' : 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_v5-6_jitc.zip',
+    'DoD_Roots': 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_v5-6_dod.zip',
+    'ECA_Roots': 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/unclass-Certificates_PKCS7_v5.5_ECA.zip',
+    'JITC_Roots': 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_v5-6_jitc.zip',
 }
 
 intermediate_certs = {
-    'Entrust_L1K_Intermediate' : 'http://aia.entrust.net/l1k-chain256.cer',
-    'Entrust_L1M_Intermediate' : 'http://aia.entrust.net/l1m-chain256.cer',
-    'DigiCert_SHA2_EV_Intermediate' : 'http://cacerts.digicert.com/DigiCertSHA2ExtendedValidationServerCA.crt',
-    'DigiCert_SHA2_Secure_Server_Intermediate' : 'http://cacerts.digicert.com/DigiCertSHA2SecureServerCA.crt',
-    'IdenTrust_TrustID_Server_Intermediate' : 'http://validation.identrust.com/certs/trustidcaa52.p7c',
-    'GeoTrust_RSA_Intermediate' : 'http://cacerts.geotrust.com/GeoTrustRSACA2018.crt',
-    'GeoTrust_EV RSA_Intermediate' : 'http://cacerts.geotrust.com/GeoTrustEVRSACA2018.crt',
-    'DigiCert_Global_CA_G2_Intermediate' : 'http://cacerts.digicert.com/DigiCertGlobalCAG2.crt',
-    'DigiCert_SHA2_High_Assurance_Intermediate' : 'http://cacerts.digicert.com/DigiCertSHA2HighAssuranceServerCA.crt',
-    'GoDaddy_Secure_CA_G2_Intermediate' : 'http://certificates.godaddy.com/repository/gdig2.crt',
+    'Entrust_L1K_Intermediate': 'http://aia.entrust.net/l1k-chain256.cer',
+    'Entrust_L1M_Intermediate': 'http://aia.entrust.net/l1m-chain256.cer',
+    'DigiCert_SHA2_EV_Intermediate': 'http://cacerts.digicert.com/DigiCertSHA2ExtendedValidationServerCA.crt',
+    'DigiCert_SHA2_Secure_Server_Intermediate': 'http://cacerts.digicert.com/DigiCertSHA2SecureServerCA.crt',
+    'IdenTrust_TrustID_Server_Intermediate': 'http://validation.identrust.com/certs/trustidcaa52.p7c',
+    'GeoTrust_RSA_Intermediate': 'http://cacerts.geotrust.com/GeoTrustRSACA2018.crt',
+    'GeoTrust_EV RSA_Intermediate': 'http://cacerts.geotrust.com/GeoTrustEVRSACA2018.crt',
+    'DigiCert_Global_CA_G2_Intermediate': 'http://cacerts.digicert.com/DigiCertGlobalCAG2.crt',
+    'DigiCert_SHA2_High_Assurance_Intermediate': 'http://cacerts.digicert.com/DigiCertSHA2HighAssuranceServerCA.crt',
+    'GoDaddy_Secure_CA_G2_Intermediate': 'http://certificates.godaddy.com/repository/gdig2.crt',
+    'HydrantID_Server_CA_O1_Intermediate': 'http://validation.identrust.com/certs/hydrantidcaO1.p7c',
 }
 
-all_certs = { **cert_stores, **intermediate_certs }
+all_certs = {**cert_stores, **intermediate_certs}
 cache_dir = "./cache"
 PTCertsPEM = "PTCerts.pem"
 PTCertsWithIntermediates = "PTCertsWithIntermediates.pem"
@@ -49,8 +50,7 @@ def get_certificates(self):
         there are none.
     :rtype: :class:`tuple` of :class:`X509` or :const:`None`
     """
-    
-    certs = _ffi.NULL
+
     if self.type_is_signed():
         certs = self._pkcs7.d.sign.cert
     elif self.type_is_signedAndEnveloped():
@@ -68,10 +68,10 @@ def get_certificates(self):
 
 def download_certificates_and_create_PEM(cert_type, url):
     """
-    Download cert_type certificate bundle from url and extract the files from it and create PEM 
+    Download cert_type certificate bundle from url and extract the files from it and create PEM
     """
     pem_file = "{}/{}_CABundle.pem".format(cache_dir, cert_type)
-    if os.path.exists(pem_file) == False:
+    if os.path.exists(pem_file) is False:
         filename = None
         parts = url.split('.')
         extension = parts[(len(parts) - 1)].lower()
@@ -79,20 +79,20 @@ def download_certificates_and_create_PEM(cert_type, url):
         if(extension == "zip"):
             zip_type = True
         filename = "{}/{}.{}".format(cache_dir, cert_type, extension)
-        if os.path.exists(filename) == False:
+        if os.path.exists(filename) is False:
             if("http://" in url or "https://" in url):
                 # Download CA certs
                 # todo: in the future could parse PKI-PKE page in IASE to get latest version, but for now just direct download
                 print("Downloading {} CA certs...".format(cert_type))
                 try:
-                    r = requests.get(url)
+                    r = requests.get(url, verify=False)
                 except Exception as err:
                     print("Error downloading {} CA certs: {}".format(cert_type, err))
                     return None
                 with open(filename, 'wb') as dl_file:
                     dl_file.write(r.content)
                 print("Finished downloading {} CA certs.".format(cert_type))
-            elif(os.path.exists(url) == True):
+            elif(os.path.exists(url) is True):
                 with open(url, 'rb') as sourcefile:
                     with open(filename, 'wb') as destfile:
                         destfile.write(sourcefile.read())
@@ -111,10 +111,10 @@ def download_certificates_and_create_PEM(cert_type, url):
             zip_file.close()
             print("Finished unzipping {} CA certs.".format(cert_type))
 
-            #find P7B
+            # find P7B
             p7b_file = None
             for (dirpath, dirnames, filenames) in os.walk(cert_directory):
-                for filename in filenames: 
+                for filename in filenames:
                     if filename.lower().endswith(".pem.p7b"):
                         p7b_file = os.path.join(dirpath, filename)
             if p7b_file is None:
@@ -122,7 +122,7 @@ def download_certificates_and_create_PEM(cert_type, url):
                 return None
             filename = p7b_file
             extension = "p7b"
-        
+
         print("Loading {} cert data...".format(cert_type))
         with open(filename, 'rb') as cert_file:
             if(extension == "p7b"):
@@ -153,24 +153,32 @@ args = parser.parse_args()
 
 if(args.clean):
     print("Cleaning cache and previous PEM files...")
-    shutil.rmtree(cache_dir)
-    print("Deleted cache directory.")
+    try:
+        shutil.rmtree(cache_dir)
+        print("Deleted cache directory.")
+    except Exception:
+        # swallow exception
+        pass
     files = [PTCertsWithIntermediates, PTCertsPEM, AllCertsPEM]
     for f in files:
-        if(os.path.exists(f)):
-            os.remove(f)
-            print("Deleted {} file.".format(f))
+        try:
+            if(os.path.exists(f)):
+                os.remove(f)
+                print("Deleted {} file.".format(f))
+        except Exception:
+            # swallow exception
+            pass
 
-if(os.path.exists(cache_dir) == False):
+if(os.path.exists(cache_dir) is False):
     os.mkdir(cache_dir)
-if os.path.exists(AllCertsPEM) == False:
+if os.path.exists(AllCertsPEM) is False:
     pem_files = []
     for cert_type, cert_url in all_certs.items():
         pem_file = download_certificates_and_create_PEM(cert_type, cert_url)
         if(pem_file is not None):
             pem_files.append(pem_file)
-    
-    if os.path.exists(PTCertsPEM) == False:
+
+    if os.path.exists(PTCertsPEM) is False:
         print("Getting publicly trusted certs PEM file...")
         with open(certifi.where(), 'rb') as certifile:
             with open(PTCertsPEM, 'wb') as ptfile:
@@ -187,15 +195,15 @@ if os.path.exists(AllCertsPEM) == False:
             if("PTCerts" in pem_file or "Public_Trust" in pem_file or "Intermediate" in pem_file):
                 with open(pem_file, 'rb') as pem:
                     ptintpem.write(pem.read())
-    print("Finished creating Public Trust with Intermediate Certs bundle.")      
+    print("Finished creating Public Trust with Intermediate Certs bundle.")
 
-    print("Creating combined all certs bundle...")            
+    print("Creating combined all certs bundle...")
     with open(AllCertsPEM, 'wb') as allpem:
         for pem_file in pem_files:
             with open(pem_file, 'rb') as pem:
                 allpem.write(pem.read())
     print("Finished creating combined all certs bundle.")
-    
+
 else:
     # todo: check date on CA bundle, and get new if too old
     print("All certs CA bundle already ready.")
