@@ -1,6 +1,4 @@
-# This python script will download the publicly trusted Mozilla root CAs and
-# the DoD PKI root CAs to create a PEM file CA bundle to be used with PSHTT
-# and SSLyze and other tools.
+# This python script will download the publicly trusted Mozilla root CAs and # the DoD PKI root CAs to create a PEM file CA bundle to be used with PSHTT # and SSLyze and other tools.
 
 import os.path
 import shutil
@@ -11,11 +9,16 @@ from OpenSSL import crypto
 import certifi
 import argparse
 
+from cryptography.hazmat.backends import default_backend from cryptography.hazmat.primitives import serialization from cryptography.x509 import (
+    load_der_x509_certificate,
+    load_pem_x509_certificate,
+)
+
 # Must add _Roots to end
 cert_stores = {
-    'DoD_Roots': 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_DoD.zip',
-    'ECA_Roots': 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_ECA.zip',
-    'JITC_Roots': 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/certificates_pkcs7_JITC.zip',
+    'DoD_Roots': 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/unclass-certificates_pkcs7_DoD.zip',
+    'ECA_Roots': 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/unclass-certificates_pkcs7_ECA.zip',
+    'JITC_Roots': 'https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/unclass-certificates_pkcs7_JITC.zip',
 }
 
 # Must add _Intermediate to end
@@ -34,8 +37,7 @@ intermediate_certs = {
     'HydrantID_Server_CA_O1_Intermediate': 'http://validation.identrust.com/certs/hydrantidcaO1.p7c',
 }
 
-all_certs = {**cert_stores, **intermediate_certs}
-cache_dir = "./cache"
+all_certs = {**cert_stores, **intermediate_certs} cache_dir = "./cache"
 PTCertsPEM = "PTCerts.pem"
 PTCertsWithIntermediates = "PTCertsWithIntermediates.pem"
 AllCertsPEM = "AllCerts.pem"
@@ -106,6 +108,7 @@ def download_certificates_and_create_PEM(cert_type, url):
         else:
             print("Already downloaded {} CA certs.".format(cert_type))
 
+        files = []
         if(zip_type is True):
             print("Unzipping {} CA certs...".format(cert_type))
             zip_file = zipfile.ZipFile(filename, 'r')
@@ -114,45 +117,58 @@ def download_certificates_and_create_PEM(cert_type, url):
             zip_file.close()
             print("Finished unzipping {} CA certs.".format(cert_type))
 
-            # find P7B
-            p7b_file = None
+            # find cert files
             for (dirpath, dirnames, filenames) in os.walk(cert_directory):
                 for filename in filenames:
-                    if filename.lower().endswith(".pem.p7b"):
-                        p7b_file = os.path.join(dirpath, filename)
-            if p7b_file is None:
-                print("Unable to find {} p7b file.".format(cert_type))
+                    if filename.lower().endswith("der.p7b") or filename.lower().endswith("p7b") or filename.lower().endswith(".cer") or filename.lower().endswith("pem"):
+                        files.append(os.path.join(dirpath, filename))
+            if len(files) == 0:
+                print("Unable to find {} certificate files.".format(cert_type))
                 return None
-            filename = p7b_file
-            extension = "p7b"
 
-        print("Loading {} cert data...".format(cert_type))
-        with open(filename, 'rb') as cert_file:
-            if(extension == "p7b"):
-                cert_data = crypto.load_pkcs7_data(crypto.FILETYPE_PEM, cert_file.read())
-                certs = get_certificates(cert_data)
-                print("Found {} certs.".format(len(certs)))
-            elif(extension == "p7c"):
-                cert_data = crypto.load_pkcs7_data(crypto.FILETYPE_ASN1, cert_file.read())
-                certs = get_certificates(cert_data)
-                print("Found {} certs.".format(len(certs)))
-            else:
-                cert_data = crypto.load_certificate(crypto.FILETYPE_ASN1, cert_file.read())
-                certs = [cert_data]
-        print("Writing {} Certs to PEM file...".format(cert_type))
-        with open(pem_file, 'ab') as pem:
-            for cert in certs:
-                certPEM = crypto.dump_certificate(crypto.FILETYPE_PEM, cert)
-                pem.write(certPEM)
+        if len(files) == 0:
+            files = [filename]
+
+        for filename in files:
+            certs = None
+            print("Loading {} cert data from {} ...".format(cert_type,filename))
+            with open(filename, 'rb') as cert_file:
+                if(filename.lower().endswith("der.p7b") or filename.lower().endswith(".p7c")):
+                    cert_data = crypto.load_pkcs7_data(crypto.FILETYPE_ASN1, cert_file.read())
+                    certs = get_certificates(cert_data)
+                    print("Found {} certs.".format(len(certs)))
+                elif(filename.lower().endswith(".p7b")):
+                    cert_data = crypto.load_pkcs7_data(crypto.FILETYPE_PEM, cert_file.read())
+                    certs = get_certificates(cert_data)
+                    print("Found {} certs.".format(len(certs)))
+                elif(filename.lower().endswith(".pem")):
+                    cert_data = crypto.load_certificate(crypto.FILETYPE_PEM, cert_file.read())
+                    certs = [cert_data]
+                else:
+                    try:
+                        cert_data = crypto.load_certificate(crypto.FILETYPE_ASN1, cert_file.read())
+                        certs = [cert_data]
+                    except Exception:
+                        try:
+                            cert_data = crypto.load_certificate(crypto.FILETYPE_PEM, cert_file.read())
+                            certs = [cert_data]
+                        except Exception:
+                            cert_data = load_der_x509_certificate(cert_file.read(), default_backend())
+                            certs = [cert_data]
+            print("Writing {} Certs to PEM file...".format(cert_type))
+            with open(pem_file, 'ab') as pem:
+                for cert in certs:
+                    certPEM = crypto.dump_certificate(crypto.FILETYPE_PEM, cert)
+                    pem.write(certPEM)
+
         print("Finished writing {} Certs to PEM file.".format(cert_type))
         return pem_file
+
     else:
         print("Already created {} CA PEM file.".format(cert_type))
         return pem_file
 
-parser = argparse.ArgumentParser(description='Create custom trust store bundle.')
-parser.add_argument('-c', '--clean', action='store_true', help='Start clean by deleting older cached items and pem files.')
-args = parser.parse_args()
+parser = argparse.ArgumentParser(description='Create custom trust store bundle.') parser.add_argument('-c', '--clean', action='store_true', help='Start clean by deleting older cached items and pem files.') args = parser.parse_args()
 
 if(args.clean):
     print("Cleaning cache and previous PEM files...")
