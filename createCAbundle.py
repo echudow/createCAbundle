@@ -1,4 +1,6 @@
-# This python script will download the publicly trusted Mozilla root CAs and # the DoD PKI root CAs to create a PEM file CA bundle to be used with PSHTT # and SSLyze and other tools.
+# This python script will download the publicly trusted Mozilla root CAs and
+# the DoD PKI root CAs to create a PEM file CA bundle to be used with PSHTT
+# and SSLyze and other tools.
 
 import os.path
 import shutil
@@ -9,8 +11,8 @@ from OpenSSL import crypto
 import certifi
 import argparse
 
-from cryptography.hazmat.backends import default_backend 
-from cryptography.hazmat.primitives import serialization 
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
 from cryptography.x509 import (
     load_der_x509_certificate,
     load_pem_x509_certificate,
@@ -39,7 +41,8 @@ intermediate_certs = {
     'HydrantID_Server_CA_O1_Intermediate': 'http://validation.identrust.com/certs/hydrantidcaO1.p7c',
 }
 
-all_certs = {**cert_stores, **intermediate_certs} cache_dir = "./cache"
+all_certs = {**cert_stores, **intermediate_certs}
+cache_dir = "./cache"
 PTCertsPEM = "PTCerts.pem"
 PTCertsWithIntermediates = "PTCertsWithIntermediates.pem"
 AllCertsPEM = "AllCerts.pem"
@@ -119,7 +122,7 @@ def download_certificates_and_create_PEM(cert_type, url):
             zip_file.close()
             print("Finished unzipping {} CA certs.".format(cert_type))
 
-            # find cert files
+            # find certificates
             for (dirpath, dirnames, filenames) in os.walk(cert_directory):
                 for filename in filenames:
                     if filename.lower().endswith("der.p7b") or filename.lower().endswith("p7b") or filename.lower().endswith(".cer") or filename.lower().endswith("pem"):
@@ -170,7 +173,9 @@ def download_certificates_and_create_PEM(cert_type, url):
         print("Already created {} CA PEM file.".format(cert_type))
         return pem_file
 
-parser = argparse.ArgumentParser(description='Create custom trust store bundle.') parser.add_argument('-c', '--clean', action='store_true', help='Start clean by deleting older cached items and pem files.') args = parser.parse_args()
+parser = argparse.ArgumentParser(description='Create custom trust store bundle.')
+parser.add_argument('-c', '--clean', action='store_true', help='Start clean by deleting older cached items and pem files.')
+args = parser.parse_args()
 
 if(args.clean):
     print("Cleaning cache and previous PEM files...")
