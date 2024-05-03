@@ -9,7 +9,9 @@ from OpenSSL import crypto
 import certifi
 import argparse
 
-from cryptography.hazmat.backends import default_backend from cryptography.hazmat.primitives import serialization from cryptography.x509 import (
+from cryptography.hazmat.backends import default_backend 
+from cryptography.hazmat.primitives import serialization 
+from cryptography.x509 import (
     load_der_x509_certificate,
     load_pem_x509_certificate,
 )
