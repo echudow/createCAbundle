@@ -39,6 +39,9 @@ intermediate_certs = {
     'DigiCert_TLS_RSA_SHA256_2020_CA1_Intermediate': 'https://cacerts.digicert.com/DigiCertTLSRSASHA2562020CA1.crt',
     'GoDaddy_Secure_CA_G2_Intermediate': 'http://certificates.godaddy.com/repository/gdig2.crt',
     'HydrantID_Server_CA_O1_Intermediate': 'http://validation.identrust.com/certs/hydrantidcaO1.p7c',
+    'Entrust_OV_TLS_Issuing_RSA_CA_1_Intermediate': 'http://cert.ssl.com/Entrust-OVTLS-I-R1.cer',
+    'GeoTrust_TLS_RSA_CA_G1_Intermediate': 'http://cacerts.geotrust.com/GeoTrustTLSRSACAG1.crt',
+    'TrustID_Server_CA_O1_Intermediate': 'http://validation.identrust.com/certs/trustidcaO1.p7c',
 }
 
 all_certs = {**cert_stores, **intermediate_certs}
